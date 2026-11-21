@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5160a56b8333fc46b973892ad56032d, type: 3}
+  m_Name: HubAssetManager
+  m_EditorClassIdentifier: _Core::HubAssetManager
+  uniqueHubMaterial: {fileID: 2100000, guid: 91cc0c9866d2f9c41a7ae6615df961fc, type: 2}
+  genericHubMaterial: {fileID: 2100000, guid: 6138a69374f8c434bb93c9378b2d6caa, type: 2}
+  atlasInfos:
+  - Type: 0
+    Atlas: {fileID: 2800000, guid: 9fd5239cbed4ac94eab1574389715637, type: 2}
+    Paths:
+    - Assets/__Worlds/00_Hub/ImportedAssets/Bed_01.fbx
+    - Assets/__Worlds/00_Hub/ImportedAssets/Book_01.fbx
+    - Assets/__Worlds/00_Hub/ImportedAssets/Ceiling_Lamp_01.fbx
+    - Assets/__Worlds/00_Hub/ImportedAssets/Nightstand_01.fbx
+    - Assets/__Worlds/00_Hub/ImportedAssets/Power_Socket_01.fbx
+    - Assets/__Worlds/00_Hub/ImportedAssets/Radio_01.fbx
+    - Assets/__Worlds/00_Hub/ImportedAssets/Room_Windows_01.fbx
+    - Assets/__Worlds/00_Hub/ImportedAssets/Sunroof_01.fbx
+    Rects:
+    - serializedVersion: 2
+      x: 0
+      y: 0
+      width: 512
+      height: 512
+    - serializedVersion: 2
+      x: 520
+      y: 0
+      width: 256
+      height: 256
+    - serializedVersion: 2
+      x: 784
+      y: 0
+      width: 256
+      height: 256
+    - serializedVersion: 2
+      x: 1048
+      y: 0
+      width: 512
+      height: 512
+    - serializedVersion: 2
+      x: 0
+      y: 520
+      width: 512
+      height: 512
+    - serializedVersion: 2
+      x: 0
+      y: 1040
+      width: 512
+      height: 512
+    - serializedVersion: 2
+      x: 520
+      y: 520
+      width: 512
+      height: 512
+    - serializedVersion: 2
+      x: 1040
+      y: 520
+      width: 512
+      height: 512
+  - Type: 1
+    Atlas: {fileID: 2800000, guid: d3a57c84743492a48936baa3a8bae4e5, type: 2}
+    Paths:
+    - Assets/__Worlds/00_Hub/ImportedAssets/Canvas_01.fbx
+    Rects:
+    - serializedVersion: 2
+      x: 0
+      y: 0
+      width: 2048
+      height: 2048
+  arrayInfos:
+  - Type: 0
+    Array: {fileID: 18700000, guid: 0e281dcc7a616c04f9b482ecf66824b1, type: 2}
+    Paths:
+    - Assets/__Worlds/00_Hub/GenericTextures/Floor.fbx
+    - Assets/__Worlds/00_Hub/GenericTextures/Plywood.fbx
+    - Assets/__Worlds/00_Hub/GenericTextures/Wood_worn.fbx

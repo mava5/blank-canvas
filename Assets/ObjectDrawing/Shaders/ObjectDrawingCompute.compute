@@ -1,0 +1,77 @@
+
+#pragma kernel DrawBrush
+
+
+RWStructuredBuffer<uint> DirtyObjectBuffer;
+
+Texture2D<float4> OperationDataTexture;
+RWTexture2DArray<float> DrawingArrayTexture;
+
+
+// 1. Kernel: Draws the brush's data into the objects seen by it
+[numthreads(8,8,1)]
+void DrawBrush(uint3 id : SV_DispatchThreadID)
+{
+    uint sliceWidth, sliceHeight, sliceCount;
+    DrawingArrayTexture.GetDimensions(sliceWidth, sliceHeight, sliceCount);
+    
+    float4 operationData = OperationDataTexture.Load(int3(id.xy, 0));
+    
+    float2 uv = operationData.rg;
+    
+    uint aPacked = (uint)((operationData.a * 65535.0) + 0.5);
+    uint objectDataIndex = (aPacked >> 6) & 0x3FF; // 10 high bits
+    uint sliceIndex = aPacked & 0x3f; // 6 low bits
+    
+    uint3 samplePos = uint3(uv.r * sliceWidth, uv.g * sliceHeight, sliceIndex);
+    
+    uint bPacked = (uint)((operationData.b * 65535.0) + 0.5);
+    bool isErasing = (bPacked & (1U << 8)) != 0;
+    uint paintPackedData = bPacked & 0xFF;
+    uint colorIndex = (paintPackedData >> 5) & 0x7;
+    uint intensity = paintPackedData & 0x1F;
+    
+    uint3 newSamplePos = samplePos;
+    uint prevPaintPackedData = (uint) (DrawingArrayTexture[newSamplePos] * 255.0);
+    uint prevColorIndex = (prevPaintPackedData >> 5) & 0x7;
+    uint prevIntensity = prevPaintPackedData & 0x1F;
+    
+    uint newColorIndex = 0;
+    uint newIntensity = 0;
+    
+    // TODO: Temporary - Revealing paint
+    if ((prevColorIndex == 7 || colorIndex == 7) && intensity > 0)
+    {
+        newColorIndex = 7;
+        newIntensity = /*prevIntensity*/0;
+    }
+    // Erasing
+    else if (isErasing)
+    {
+        newColorIndex = prevColorIndex;
+        newIntensity = clamp(31 - intensity, 0, prevIntensity);
+    }
+    // Raise same color
+    else if (colorIndex == prevColorIndex)
+    {
+        newColorIndex = colorIndex;
+        newIntensity = max(intensity, prevIntensity);
+    }
+    // Overwrite previous color
+    else if (intensity > 0)
+    {
+        newColorIndex = colorIndex;
+        newIntensity = max(intensity, prevIntensity * 0.5);
+    }
+    // Leave the rest the same as before
+    else
+    {
+        newColorIndex = prevColorIndex;
+        newIntensity = prevIntensity;
+    }
+    
+    DirtyObjectBuffer[objectDataIndex] = 1;
+    
+    uint newPaintPackedData = ((newColorIndex & 0x7) << 5) | (newIntensity & 0x1F);
+    DrawingArrayTexture[newSamplePos] = newPaintPackedData / 255.0;
+}

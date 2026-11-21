@@ -1,0 +1,54 @@
+
+#pragma kernel CalculateColors
+
+#define MAX_ALLOWED_COLORS 16 // 4 bits
+
+
+struct ObjectTileData
+{
+    int DataIndex;
+    int SliceIndex;
+    int XMin;
+    int YMin;
+};
+
+int MaxColors;
+int MaxObjects;
+
+StructuredBuffer<ObjectTileData> DirtyTileBuffer;
+
+RWStructuredBuffer<uint> ColorAmountBuffer;
+RWTexture2DArray<float> DrawingArrayTexture;
+
+groupshared uint sharedColorAmounts[MAX_ALLOWED_COLORS];
+
+
+// 1. Kernel: Calculates the color amounts per each tile
+[numthreads(16, 16, 1)]
+void CalculateColors(uint3 gtid : SV_GroupThreadID, uint groupIndex : SV_GroupIndex, uint3 groupID : SV_GroupID)
+{
+    // Initialize color amounts with 0
+    // Note: groupIndex is the index of the thread
+    if (groupIndex < MAX_ALLOWED_COLORS)
+    { sharedColorAmounts[groupIndex] = 0; }
+    GroupMemoryBarrierWithGroupSync();
+    
+    ObjectTileData tile = DirtyTileBuffer[groupID.x];
+    uint3 samplePos = uint3(uint2(tile.XMin, tile.YMin) + gtid.xy, tile.SliceIndex);
+    uint paintPackedData = (uint)(DrawingArrayTexture[samplePos] * 255.0);
+    uint colorIndex = (paintPackedData >> 5) & 0x7;
+    uint intensity = paintPackedData & 0x1F;
+
+    // Increment color amount
+    if (intensity > 0 && colorIndex < MAX_ALLOWED_COLORS)
+    { InterlockedAdd(sharedColorAmounts[colorIndex], 1); }
+    GroupMemoryBarrierWithGroupSync();
+    
+    // Add new color amounts to buffer
+    if (groupIndex < MaxColors)
+    {
+        int count = sharedColorAmounts[groupIndex];
+        if (count > 0)
+        { InterlockedAdd(ColorAmountBuffer[(tile.DataIndex * MaxColors) + groupIndex], count); }
+    }
+}

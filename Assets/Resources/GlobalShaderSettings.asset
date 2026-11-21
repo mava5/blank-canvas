@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06f8b7cafa58c7047ba5a0437053aaf2, type: 3}
+  m_Name: GlobalShaderSettings
+  m_EditorClassIdentifier: _Shared::GlobalShaderSettings
+  animation_speed: 1.1
+  lighting_steps: 16
+  lighting_brightness: 0.05
+  lighting_noiseSize: 1.5
+  lighting_noiseOffset: {x: 0, y: 0, z: 0}
+  lighting_noiseStrength: 0.1
+  hatching_texture: {fileID: 2800000, guid: 038acdc8a9737584fa392e88edaa3376, type: 3}
+  hatching_size: 0.45
+  hatching_blending: 1
+  hatching_smudging: 0.5
+  hatching_strength: 1
+  editor_checkerSize: 4.8
+  fullSceneMaterial: {fileID: 2100000, guid: ea3f876c940251342a72fa54a9e1f455, type: 2}

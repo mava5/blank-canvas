@@ -1,0 +1,60 @@
+
+#pragma kernel GenerateTiles
+
+
+struct ObjectTileData
+{
+    int DataIndex;
+    int SliceIndex;
+    int XMin;
+    int YMin;
+};
+
+struct ObjectData
+{
+    int SliceIndex;
+    int TextureIndex;
+    int TextureSize;
+    int XMin;
+    int YMin;
+};
+
+int MaxColors;
+int MaxObjects;
+int MicroTileSize;
+
+RWStructuredBuffer<uint> DirtyObjectBuffer;
+AppendStructuredBuffer<ObjectTileData> DirtyTileBuffer;
+
+RWStructuredBuffer<uint> ColorAmountBuffer;
+StructuredBuffer<ObjectData> ObjectDataBuffer;
+
+
+// 1. Kernel: Generating macro and micro tiles from dirty objects
+[numthreads(64, 1, 1)]
+void GenerateTiles(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= MaxObjects || DirtyObjectBuffer[id.x] == 0) { return; }
+    
+    // Clear object's previous color amounts
+    for (int i = 0; i < MaxColors; i++)
+    { ColorAmountBuffer[id.x * MaxColors + i] = 0; }
+    
+    ObjectData objectData = ObjectDataBuffer[id.x];
+    
+    // Split object into micro tiles
+    for (int xOff = 0; xOff < objectData.TextureSize; xOff += MicroTileSize)
+    {
+        for (int yOff = 0; yOff < objectData.TextureSize; yOff += MicroTileSize)
+        {
+            ObjectTileData tile;
+            tile.DataIndex = id.x;
+            tile.SliceIndex = objectData.SliceIndex;
+            tile.XMin = objectData.XMin + xOff;
+            tile.YMin = objectData.YMin + yOff;
+            DirtyTileBuffer.Append(tile);
+        }
+    }
+    
+    DirtyObjectBuffer[id.x] = 0;
+}

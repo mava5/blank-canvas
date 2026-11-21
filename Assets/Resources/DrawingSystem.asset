@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4aaf57b0b31e04685d30cec6f75884, type: 3}
+  m_Name: DrawingSystem
+  m_EditorClassIdentifier: 
+  objectDrawingRenderer: {fileID: 11400000, guid: 19dba0f8297627b45a28c79cf63bf1c5, type: 2}
+  objectDrawingCompute: {fileID: 7200000, guid: f913af41baa5a7943b0793254dd8bab9, type: 3}
+  objectCleaningCompute: {fileID: 7200000, guid: 7db8988326b5daf4e9b7bd1644d2bf78, type: 3}
+  tileGenerationCompute: {fileID: 7200000, guid: b4bce8b4f30bc8a42b00d58b9114b2a8, type: 3}
+  colorCalculatingCompute: {fileID: 7200000, guid: 84da2b674e8ed2a4c8531292449f522c, type: 3}
+  maxTextureSize: 4096
+  minTextureSize: 16
+  sliceCount: 32
+  maxConcurrentDraws: 100
+  brushBaseMaterial: {fileID: -876546973899608171, guid: b5da811f87a803046ae079db83303dd4, type: 3}
+  operationDataMaterial: {fileID: 2100000, guid: ebfcb7f35d8587e4d873937c5697afb2, type: 2}
+  paintOnlyOperationDataMaterial: {fileID: 2100000, guid: b924ef8f8362bc742b3a79f640deb060, type: 2}
+  brushSize: 512

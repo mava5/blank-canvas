@@ -1,0 +1,43 @@
+
+#pragma kernel CleanFull
+#pragma kernel CleanMacro
+#pragma kernel CleanMicro
+
+
+struct CleanTileData
+{
+    int SliceIndex;
+    int XMin;
+    int YMin;
+};
+
+RWTexture2DArray<float> DrawingArrayTexture;
+
+StructuredBuffer<uint> FullCleanBuffer;
+StructuredBuffer<CleanTileData> MacroCleanBuffer;
+StructuredBuffer<CleanTileData> MicroCleanBuffer;
+
+
+// 1. Kernel: Full slice cleaning
+[numthreads(16, 16, 1)]
+void CleanFull(uint3 id : SV_DispatchThreadID)
+{
+    uint sliceIndex = FullCleanBuffer[id.z];
+    DrawingArrayTexture[uint3(id.xy, sliceIndex)] = 0;
+}
+
+// 2. Kernel: Macro tile cleaning
+[numthreads(16, 16, 1)]
+void CleanMacro(uint3 id : SV_DispatchThreadID, uint3 groupID : SV_GroupID)
+{
+    CleanTileData data = MacroCleanBuffer[groupID.z];
+    DrawingArrayTexture[uint3(uint2(data.XMin, data.YMin) + id.xy, data.SliceIndex)] = 0;
+}
+
+// 3. Kernel: Micro tile cleaning
+[numthreads(16, 16, 1)]
+void CleanMicro(uint3 id : SV_DispatchThreadID, uint3 groupID : SV_GroupID)
+{
+    CleanTileData data = MicroCleanBuffer[groupID.z];
+    DrawingArrayTexture[uint3(uint2(data.XMin, data.YMin) + id.xy, data.SliceIndex)] = 0;
+}
